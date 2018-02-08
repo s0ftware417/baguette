@@ -1,8 +1,3 @@
-#need to separate in to bins of equal width
-#need to get rid of blank input
-#need to convert input to discreetable data types
-#need to ignore first line
-
 import math
 import csv
 import time
@@ -287,144 +282,18 @@ def boxes(ranges, tree, bins):
     return boxes
 
 
-# def plot(data, rectangle_list):
-#     figure = plt.figure()
-#     ax = figure.add_subplot(111)
-#     for row in data:
-#         if row[2] == 0:
-#             ax.scatter(row[0], row[1], color='r')
-#         else:
-#             ax.scatter(row[0], row[1], color='g')
-#     for r in rectangle_list:
-#         color = 'g'
-#         if r[4] == 0:
-#             color = 'r'
-#         plt.gca().add_patch(Rectangle((r[0],r[1]),r[2],r[3], alpha=0.5, facecolor=color))
-#     plt.show()
-
-
-
-
 def main():
-    f = open("synthetic-1.csv", 'r')
-    #f = open("Video_Games_Sales.csv", 'r') #<------------- this shit's important , use it
+    f = open("Video_Games_Sales.csv", 'r') #<------------- this shit's important , use it
+    first_line = f.readline()
     data = list(csv.reader(f))
-
-    for item in data:
-        item[0] = float(item[0])
-        item[1] = float(item[1])
-        item[2] = int(item[2])
-    bins = 5
-
-    data_orig = copy(data)
-
-    print("here too", data_orig)
-
-    # sort_by(data, 0)
-    # print()
-    # for i in range(0,99):
-    #     print(data[i], end = "")
-    # print()
-    # for i in range(100,199):
-    #     print(data[i], end = "")
-    # sort_by(data, 1)
-    # print()
-    # print()
-    #
-    # data = discreeett(data, bins, 0)
-    #
-    # sort_by(data, 0)
-    # print()
-    # for i in range(0, 99):
-    #     print(data[i], end="")
-    # print()
-    # for i in range(100, 199):
-    #     print(data[i], end="")
-    # sort_by(data, 1)
-    # print()
-    # print()
-
-    #print("size:", len(data), "->", data)
-    #data = discreeett(data, 5, 11)
-    #data = discreeett(data, 15, 9)
-    #data = discreeett(data, 10, 8)
-    #data = discreeett(data, 8, 4)
-
-
-
-    data = discreeett(data, bins, 0)
-    print(data)
-    data = discreeett(data, bins, 1)
-    print(data)
-    sort_by(data, 0)
-    print("->",data)
-
-    # data = [
-    #     ["rainy", "hot", "high", "F", "no"],
-    #     ["rainy", "hot", "high", "T", "no"],
-    #     ["overcast", "hot", "high", "F", "yes"],
-    #     ["sunny", "mild", "high", "F", "yes"],
-    #     ["sunny", "cool", "normal", "F", "yes"],
-    #     ["sunny", "cool", "normal", "T", "no"],
-    #     ["overcast", "cool", "normal", "T", "yes"],
-    #     ["rainy", "mild", "high", "F", "no"],
-    #     ["rainy", "cool", "normal", "F", "yes"],
-    #     ["sunny", "mild", "normal", "F", "yes"],
-    #     ["rainy", "mild", "normal", "T", "yes"],
-    #     ["overcast", "mild", "high", "T", "yes"],
-    #     ["overcast", "hot", "normal", "F", "yes"],
-    #     ["sunny", "mild", "high", "T", "no"]
-    # ]
-    starttime = time.time()
-    record = options(data)
-    i = 0
-    for dat in record:
-        print(i, len(dat), "->", dat)
-        i += 1
-    print("info gain: ", gainz(data, 0))
     visited = []
     tree = rucursiv(data, 1, visited)
-    print()
-    print(tree)
-
+    print("tree ->", tree)
     wins = 0
     for m in data:
-        if traversal(tree,m) == m[len(m)-1]:
+        if traversal(tree, m) == m[len(m) - 1]:
             wins += 1
-
-    print("percent:", 100*float(wins/len(data)))
-
-    #print("here", data_orig)
-
-    g = open("synthetic-1.csv", 'r')
-    original = list(csv.reader(g))
-    for item in original:
-        item[0] = float(item[0])
-        item[1] = float(item[1])
-        item[2] = int(item[2])
-
-    #print(original)
-
-    a0 = disc_ranges(original, data, record, 0)
-    a1 = disc_ranges(original, data, record, 1)
-
-    final_ranges = []
-    final_ranges.append(a0)
-    final_ranges.append(a1)
-    for e in a0:
-        print(e)
-    print()
-    for e in a1:
-        print(e)
-    print()
-    print("-------------------------------------------")
-    yes = boxes(final_ranges, tree, bins)
-    print("yes:", yes)
-    print("-------------------------------------------")
-    test = 5
-    print(test, "goes in category", categorize(test,final_ranges,0))
-
-    print("Runtime was: ", time.time() - starttime)
+    print("percent correct predictions:", int(100 * float(wins / len(data))))
 
 
 if __name__ == '__main__': main()
