@@ -6,7 +6,7 @@
 import math
 import csv
 import time
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def da_range(set, attribute):
@@ -256,7 +256,38 @@ def categorize(input, disc_attribute_ranges, attribute):
     return index
 
 
-def plot(data):
+def boxes(ranges, tree, bins):
+    boxes = []
+    print("splitting on", tree[0])
+    for middle in tree[1]:
+        #print(middle)
+        xindex = middle[0]-1
+        x_min = ranges[tree[0]][xindex][0]
+        x_max = ranges[tree[0]][xindex][1]
+        print("attribute", tree[0], "range(x) from", ranges[tree[0]][xindex][0], "to", ranges[tree[0]][xindex][1])
+        if type(middle[1]) != list:
+            other = 0
+            if tree[0] == 0:
+                other = 1
+            print("\ty range from", ranges[other][0][0], "to", ranges[other][len(ranges[other])-1][1])
+            y_min = ranges[other][0][0]
+            y_max = ranges[other][len(ranges[other])-1][1]
+            rec = [x_min, y_min, x_max - x_min, y_max - y_min]
+            boxes.append(rec)
+
+        else:
+            for inner in middle[1][1]:
+                yindex = inner[0] - 1
+                #print("inner:", inner)
+                y_min = ranges[middle[1][0]][yindex][0]
+                y_max = ranges[middle[1][0]][yindex][1]
+                print("\tattribute", middle[1][0], "range(y) from", ranges[middle[1][0]][yindex][0], "to", ranges[middle[1][0]][yindex][1])
+                rec = [x_min, y_min, x_max - x_min, y_max - y_min]
+                boxes.append(rec)
+    return boxes
+
+
+def plot(data, rectangle_list):
     figure = plt.figure()
     ax = fig.add_subplot(111)
     for row in data:
@@ -264,7 +295,11 @@ def plot(data):
             ax.scatter(row[0], row[1], color="FFFF00")
         else:
             ax.scatter(row[0], row[1], color="00FFFF")
+    for r in rectangle_list:
+        plt.gca().add_patch(Rectangle((r[0],r[1]),r[2],r[3], alpha=0.5, facecolor=c))
     plt.show()
+
+
 
 
 def main():
@@ -276,7 +311,7 @@ def main():
         item[0] = float(item[0])
         item[1] = float(item[1])
         item[2] = int(item[2])
-    bins = 6
+    bins = 5
 
     data_orig = copy(data)
 
@@ -376,7 +411,13 @@ def main():
     for e in a0:
         print(e)
     print()
-
+    for e in a1:
+        print(e)
+    print()
+    print("-------------------------------------------")
+    yes = boxes(final_ranges, tree, bins)
+    print("yes:", yes)
+    print("-------------------------------------------")
     test = 5
     print(test, "goes in category", categorize(test,final_ranges,0))
 
