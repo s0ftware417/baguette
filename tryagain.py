@@ -6,7 +6,8 @@
 import math
 import csv
 import time
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import Rectangle
 
 
 def da_range(set, attribute):
@@ -258,18 +259,18 @@ def categorize(input, disc_attribute_ranges, attribute):
 
 def boxes(ranges, tree, bins):
     boxes = []
-    print("splitting on", tree[0])
+    #print("splitting on", tree[0])
     for middle in tree[1]:
         #print(middle)
         xindex = middle[0]-1
         x_min = ranges[tree[0]][xindex][0]
         x_max = ranges[tree[0]][xindex][1]
-        print("attribute", tree[0], "range(x) from", ranges[tree[0]][xindex][0], "to", ranges[tree[0]][xindex][1])
+        #print("attribute", tree[0], "range(x) from", ranges[tree[0]][xindex][0], "to", ranges[tree[0]][xindex][1])
         if type(middle[1]) != list:
             other = 0
             if tree[0] == 0:
                 other = 1
-            print("\ty range from", ranges[other][0][0], "to", ranges[other][len(ranges[other])-1][1])
+            #print("\ty range from", ranges[other][0][0], "to", ranges[other][len(ranges[other])-1][1])
             y_min = ranges[other][0][0]
             y_max = ranges[other][len(ranges[other])-1][1]
             rec = [x_min, y_min, x_max - x_min, y_max - y_min, middle[1]]
@@ -278,29 +279,29 @@ def boxes(ranges, tree, bins):
         else:
             for inner in middle[1][1]:
                 yindex = inner[0] - 1
-                print("inner:", inner)
+                #print("inner:", inner)
                 y_min = ranges[middle[1][0]][yindex][0]
                 y_max = ranges[middle[1][0]][yindex][1]
-                print("\tattribute", middle[1][0], "range(y) from", ranges[middle[1][0]][yindex][0], "to", ranges[middle[1][0]][yindex][1])
+                #print("\tattribute", middle[1][0], "range(y) from", ranges[middle[1][0]][yindex][0], "to", ranges[middle[1][0]][yindex][1])
                 rec = [x_min, y_min, x_max - x_min, y_max - y_min, inner[1]]
                 boxes.append(rec)
     return boxes
 
 
-# def plot(data, rectangle_list):
-#     figure = plt.figure()
-#     ax = figure.add_subplot(111)
-#     for row in data:
-#         if row[2] == 0:
-#             ax.scatter(row[0], row[1], color='r')
-#         else:
-#             ax.scatter(row[0], row[1], color='g')
-#     for r in rectangle_list:
-#         color = 'g'
-#         if r[4] == 0:
-#             color = 'r'
-#         plt.gca().add_patch(Rectangle((r[0],r[1]),r[2],r[3], alpha=0.5, facecolor=color))
-#     plt.show()
+def plot(data, rectangle_list):
+    figure = plt.figure()
+    ax = figure.add_subplot(111)
+    for row in data:
+        if row[2] == 0:
+            ax.scatter(row[0], row[1], color='r')
+        else:
+            ax.scatter(row[0], row[1], color='g')
+    for r in rectangle_list:
+        color = 'g'
+        if r[4] == 0:
+            color = 'r'
+        plt.gca().add_patch(Rectangle((r[0],r[1]),r[2],r[3], alpha=0.5, facecolor=color))
+    plt.show()
 
 
 
@@ -353,11 +354,11 @@ def main():
 
 
     data = discreeett(data, bins, 0)
-    print(data)
+    #print(data)
     data = discreeett(data, bins, 1)
-    print(data)
+    #print(data)
     sort_by(data, 0)
-    print("->",data)
+    #print("->",data)
 
     # data = [
     #     ["rainy", "hot", "high", "F", "no"],
@@ -377,22 +378,22 @@ def main():
     # ]
     starttime = time.time()
     record = options(data)
-    i = 0
-    for dat in record:
-        print(i, len(dat), "->", dat)
-        i += 1
-    print("info gain: ", gainz(data, 0))
+    # i = 0
+    # for dat in record:
+    #     print(i, len(dat), "->", dat)
+    #     i += 1
+    #print("info gain: ", gainz(data, 0))
     visited = []
     tree = rucursiv(data, 1, visited)
-    print()
-    print(tree)
+    #print()
+    print("tree ->", tree)
 
     wins = 0
     for m in data:
         if traversal(tree,m) == m[len(m)-1]:
             wins += 1
 
-    print("percent:", 100*float(wins/len(data)))
+    print("percent correct predictions:", 100*float(wins/len(data)))
 
     #print("here", data_orig)
 
@@ -417,13 +418,13 @@ def main():
     for e in a1:
         print(e)
     print()
-    print("-------------------------------------------")
+    #print("-------------------------------------------")
     yes = boxes(final_ranges, tree, bins)
-    print("yes:", yes)
-    print("-------------------------------------------")
+    #print("yes:", yes)
+    #print("-------------------------------------------")
     test = 5
-    print(test, "goes in category", categorize(test,final_ranges,0))
-
+    #print(test, "goes in category", categorize(test,final_ranges,0))
+    plot(original, yes)
     print("Runtime was: ", time.time() - starttime)
 
 
